@@ -20,6 +20,6 @@ export type AppCheckMode = "v3" | "enterprise";
 
 export const appCheckMode: AppCheckMode = "v3";
 
-export const recaptchaSiteKey = "REPLACE_ME";
+export const recaptchaSiteKey = "6LfEwCsuAAAAAAyDM7NaNRke6r_FbOerlIy5za7x";
 
 export const defaultCloudModel = "gemini-3.5-flash-lite";
