@@ -1,0 +1,8 @@
+# reCAPTCHA site keys are public: they are embedded in the HTML of every page
+# that uses them. Only the secret key must stay out of the repository, and it
+# lives in the Firebase console. This narrow allowlist keeps the scanner quiet
+# about the one public identifier we must ship.
+[[allowlists]]
+description = "Public reCAPTCHA site key in the web client config"
+paths = ['''web/src/config\.ts''']
+regexes = ['''recaptchaSiteKey\s*=\s*"6L[a-zA-Z0-9_-]{38}"''']
