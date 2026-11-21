@@ -6,11 +6,12 @@ Firebase console.
 
 Project: `shine-your-eye` (Spark / no-cost plan).
 
-## 1. Web app (done)
+## 1. Web app
 
-The web app is registered and its config is committed in
-`web/src/config.ts`. That API key is public by design; App Check is what
-protects the project's quota.
+The web app is registered. `web/src/config.ts` holds only public
+identifiers; the API key is not committed. On Firebase Hosting the app reads
+`/__/firebase/init.json`, which serves the real config, so production needs no
+setup. For localhost, paste the public API key into `config.ts` temporarily.
 
 ## 2. App Check for the web app
 
