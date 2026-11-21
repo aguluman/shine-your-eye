@@ -5,16 +5,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableStateOf
 
 class MainActivity : ComponentActivity() {
+
+    private val shared = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val shared = sharedText(intent)
+        shared.value = sharedText(intent)
         setContent {
-            ShineTheme { CheckScreen(app = application as ShineEyeApp, shared = shared) }
+            ShineTheme { CheckScreen(app = application as ShineEyeApp, shared = shared.value) }
         }
+    }
+
+    // A second share or "Check for scam" while the app is already open must
+    // replace the message instead of keeping the first one on screen.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        shared.value = sharedText(intent)
     }
 }
 
