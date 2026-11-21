@@ -7,7 +7,13 @@ import {
 import { fetchAndActivate, getRemoteConfig, getValue } from "firebase/remote-config";
 import { findingFor, firstStepFor, inspect, stepAfterDevice, type Finding, type Inspection } from "shineye-core";
 import { deviceAvailability, downloadDeviceModel, Models, type Answer } from "./ai";
-import { appCheckMode, defaultCloudModel, firebaseConfig, recaptchaSiteKey } from "./config";
+import {
+  appCheckMode,
+  defaultCloudModel,
+  firebaseConfig,
+  recaptchaSiteKey,
+  type FirebaseOptions,
+} from "./config";
 
 type Step = "ASK_ON_DEVICE" | "ASK_CLOUD" | "OFFER_CLOUD" | "SETTLE";
 type Consent = "ALWAYS" | "ASK" | "NEVER";
@@ -42,25 +48,42 @@ const deviceNote = el<HTMLElement>("device-note");
 const downloadButton = el<HTMLButtonElement>("download");
 
 if (location.hostname === "localhost") globalThis.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-const app = initializeApp(firebaseConfig);
-initializeAppCheck(app, {
-  provider:
-    appCheckMode === "enterprise"
-      ? new ReCaptchaEnterpriseProvider(recaptchaSiteKey)
-      : new ReCaptchaV3Provider(recaptchaSiteKey),
-  isTokenAutoRefreshEnabled: true,
-});
 
-const remote = getRemoteConfig(app);
-remote.defaultConfig = { cloud_model: defaultCloudModel, official_domains: "" };
-const ready = fetchAndActivate(remote).catch(() => false);
+// The config is fetched rather than committed: /__/firebase/init.json is a
+// reserved Firebase Hosting URL that returns the project's web config. A
+// filled-in config.ts takes precedence during local development.
+async function resolveConfig(): Promise<FirebaseOptions> {
+  if (firebaseConfig.apiKey !== "REPLACE_ME") return firebaseConfig;
+  try {
+    const response = await fetch("/__/firebase/init.json");
+    if (response.ok) return (await response.json()) as FirebaseOptions;
+  } catch {
+    // Fall through to the error below.
+  }
+  throw new Error("No Firebase configuration. Fill in web/src/config.ts for local development.");
+}
+
+const boot = (async () => {
+  const app = initializeApp(await resolveConfig());
+  initializeAppCheck(app, {
+    provider:
+      appCheckMode === "enterprise"
+        ? new ReCaptchaEnterpriseProvider(recaptchaSiteKey)
+        : new ReCaptchaV3Provider(recaptchaSiteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+  const remote = getRemoteConfig(app);
+  remote.defaultConfig = { cloud_model: defaultCloudModel, official_domains: "" };
+  await fetchAndActivate(remote).catch(() => false);
+  return { app, remote };
+})();
 
 let models: Models | undefined;
 let official: string[] = [];
 
 async function setup(): Promise<Models> {
   if (models) return models;
-  await ready;
+  const { app, remote } = await boot;
   official = getValue(remote, "official_domains").asString().split(",").map((d) => d.trim()).filter(Boolean);
   models = new Models(app, getValue(remote, "cloud_model").asString() || defaultCloudModel);
   return models;
@@ -260,6 +283,6 @@ form.addEventListener("submit", (event) => {
   });
 });
 message.addEventListener("input", updatePreview);
-ready.then(() => setup()).then(updatePreview);
+setup().then(updatePreview).catch(() => {});
 updatePreview();
 void describeDevice();

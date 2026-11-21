@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "shine-your-eye",
     "public": "web/dist",
     "ignore": ["**/*.map"]
   },
