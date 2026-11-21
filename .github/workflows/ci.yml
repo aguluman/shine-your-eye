@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  core-and-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # The tests run on the JVM and on Node, so a pass covers both targets.
+      - name: Core tests
+        run: ./gradlew :core:allTests --console=plain
+
+      - name: Core JavaScript library
+        run: ./gradlew :core:jsNodeProductionLibraryDistribution --console=plain
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Web type-check and bundle
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
