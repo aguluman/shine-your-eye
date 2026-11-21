@@ -114,6 +114,12 @@ function busy(text: string | null): void {
   checkButton.disabled = text !== null;
 }
 
+function bullets(items: string[]): HTMLUListElement {
+  const list = document.createElement("ul");
+  list.append(...items.map((item) => Object.assign(document.createElement("li"), { textContent: item })));
+  return list;
+}
+
 function show(finding: Finding, trail: string[]): void {
   busy(null);
   consentPanel.hidden = true;
@@ -122,14 +128,20 @@ function show(finding: Finding, trail: string[]): void {
   const advice = document.createElement("p");
   advice.className = "advice";
   advice.textContent = finding.advice;
-  const reasons = document.createElement("ul");
-  reasons.append(...finding.reasons.map((reason) => Object.assign(document.createElement("li"), { textContent: reason })));
   const how = document.createElement("h3");
   how.textContent = "How this was checked";
   const steps = document.createElement("ol");
   steps.append(...trail.map((step) => Object.assign(document.createElement("li"), { textContent: step })));
+  const parts: HTMLElement[] = [heading, advice];
+  if (finding.signals.length) parts.push(bullets(finding.signals));
+  if (finding.modelReasons.length) {
+    const model = document.createElement("h3");
+    model.textContent = "What the AI noticed";
+    parts.push(model, bullets(finding.modelReasons));
+  }
+  parts.push(how, steps);
   result.className = `result ${finding.kind.toLowerCase().replace("_", "-")}`;
-  result.replaceChildren(heading, advice, ...(finding.reasons.length ? [reasons] : []), how, steps);
+  result.replaceChildren(...parts);
   result.hidden = false;
   result.focus();
 }

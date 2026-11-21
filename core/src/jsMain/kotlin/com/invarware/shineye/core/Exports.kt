@@ -19,7 +19,13 @@ class RedactedMessage internal constructor(internal val value: Redacted) {
 }
 
 @JsExport
-class Finding internal constructor(val headline: String, val advice: String, val kind: String, val reasons: Array<String>)
+class Finding(
+    val headline: String,
+    val advice: String,
+    val kind: String,
+    val signals: Array<String>,
+    val modelReasons: Array<String>,
+)
 
 @JsExport
 fun inspect(text: String, officialDomains: Array<String>): Inspection =
@@ -42,8 +48,13 @@ fun stepAfterDevice(inspection: Inspection, online: Boolean, consent: String, ri
 fun findingFor(inspection: Inspection, risk: String?, confident: Boolean, reasons: Array<String>, source: String?): Finding {
     val opinion = risk?.let { Opinion(riskOf(it), confident, reasons.toList(), if (source == "ON_DEVICE") Source.ON_DEVICE else Source.CLOUD) }
     val verdict = inspection.analysis.verdict(opinion)
-    val explained = verdict.signals.map { it.explanation } + (verdict.opinion?.reasons ?: emptyList())
-    return Finding(verdict.kind.headline, verdict.kind.advice, verdict.kind.name, explained.distinct().toTypedArray())
+    return Finding(
+        headline = verdict.kind.headline,
+        advice = verdict.kind.advice,
+        kind = verdict.kind.name,
+        signals = verdict.signals.map { it.explanation }.toTypedArray(),
+        modelReasons = (verdict.opinion?.reasons ?: emptyList()).distinct().toTypedArray(),
+    )
 }
 
 private fun environment(deviceAvailable: Boolean, online: Boolean, consent: String) = Environment(

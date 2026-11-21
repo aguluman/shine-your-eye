@@ -179,8 +179,12 @@ private fun ResultCard(done: Outcome.Done) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(verdict.kind.headline, style = MaterialTheme.typography.titleLarge, color = tone, fontWeight = FontWeight.Bold)
             Text(verdict.kind.advice, style = MaterialTheme.typography.bodyLarge)
-            val reasons = (verdict.signals.map { it.explanation } + (verdict.opinion?.reasons ?: emptyList())).distinct()
-            reasons.forEach { Text("• $it", style = MaterialTheme.typography.bodyMedium) }
+            verdict.signals.forEach { Text("• ${it.explanation}", style = MaterialTheme.typography.bodyMedium) }
+            val modelReasons = verdict.opinion?.reasons.orEmpty().distinct()
+            if (modelReasons.isNotEmpty()) {
+                Text("What the AI noticed", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                modelReasons.forEach { Text("• $it", style = MaterialTheme.typography.bodyMedium) }
+            }
             Text("How this was checked", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             done.trail.forEachIndexed { index, hop ->
                 Text("${index + 1}. ${hop.label}", style = MaterialTheme.typography.bodySmall)
