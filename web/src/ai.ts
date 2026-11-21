@@ -36,6 +36,7 @@ export async function deviceAvailability(): Promise<LanguageModelAvailability> {
 export async function downloadDeviceModel(onProgress: (fraction: number) => void): Promise<void> {
   if (typeof LanguageModel === "undefined") return;
   const session = await LanguageModel.create({
+    ...englishText,
     monitor(monitor) {
       monitor.addEventListener("downloadprogress", (event) => onProgress((event as ProgressEvent).loaded));
     },
