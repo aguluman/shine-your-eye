@@ -18,7 +18,7 @@ export const firebaseConfig = {
 // console, never into this file.
 export type AppCheckMode = "v3" | "enterprise";
 
-export const appCheckMode: AppCheckMode = "v3";
+export const appCheckMode: AppCheckMode = "enterprise";
 
 export const recaptchaSiteKey = "6LfEwCsuAAAAAAyDM7NaNRke6r_FbOerlIy5za7x";
 

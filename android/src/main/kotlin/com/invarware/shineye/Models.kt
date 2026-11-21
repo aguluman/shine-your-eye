@@ -1,5 +1,6 @@
 package com.invarware.shineye
 
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.ai.InferenceMode
 import com.google.firebase.ai.InferenceSource
@@ -47,8 +48,17 @@ class DeviceModel(cloudModelName: String) {
             onDeviceConfig = OnDeviceConfig(mode = InferenceMode.ONLY_ON_DEVICE, maxOutputTokens = 256),
         )
 
-    suspend fun status(): OnDevice =
-        if (FirebaseAIOnDevice.checkStatus() == OnDeviceModelStatus.AVAILABLE) OnDevice.AVAILABLE else OnDevice.UNAVAILABLE
+    suspend fun status(): OnDevice {
+        val status = FirebaseAIOnDevice.checkStatus()
+        val name = when (status) {
+            OnDeviceModelStatus.AVAILABLE -> "AVAILABLE"
+            OnDeviceModelStatus.DOWNLOADABLE -> "DOWNLOADABLE"
+            OnDeviceModelStatus.DOWNLOADING -> "DOWNLOADING"
+            else -> "UNAVAILABLE"
+        }
+        Log.i("ShineYourEye", "on-device model: $name")
+        return if (status == OnDeviceModelStatus.AVAILABLE) OnDevice.AVAILABLE else OnDevice.UNAVAILABLE
+    }
 
     suspend fun judge(message: Raw): Opinion {
         val response = model.generateObject(Judgement.firebaseAISchema(), Prompt.onDevice(message))
