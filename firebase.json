@@ -2,7 +2,38 @@
   "hosting": {
     "site": "shine-your-eye",
     "public": "web/dist",
-    "ignore": ["**/*.map"]
+    "ignore": [
+      "**/*.map"
+    ],
+    "headers": [
+      {
+        "source": "/index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/app.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/styles.css",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ]
   },
   "remoteconfig": {
     "template": "remoteconfig.template.json"
