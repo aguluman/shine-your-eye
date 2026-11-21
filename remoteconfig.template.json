@@ -1,0 +1,14 @@
+{
+  "parameters": {
+    "cloud_model": {
+      "defaultValue": { "value": "gemini-3.5-flash-lite" },
+      "description": "Cloud Gemini model used for redacted second opinions"
+    },
+    "official_domains": {
+      "defaultValue": {
+        "value": "cbn.gov.ng,nibss-plc.com.ng,gtbank.com,firstbanknigeria.com,zenithbank.com,accessbankplc.com,ubagroup.com,fidelitybank.ng,opayweb.com,kuda.com,moniepoint.com,palmpay.com"
+      },
+      "description": "Comma-separated official bank domains; links to any other domain using a bank's name are flagged"
+    }
+  }
+}

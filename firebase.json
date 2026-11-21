@@ -1,0 +1,9 @@
+{
+  "hosting": {
+    "public": "web/dist",
+    "ignore": ["**/*.map"]
+  },
+  "remoteconfig": {
+    "template": "remoteconfig.template.json"
+  }
+}

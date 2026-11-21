@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Check a suspicious bank message on your own device before you act on it.">
+  <title>Shine your eye: check a bank message before you act</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <span class="wordmark"><span class="eye" aria-hidden="true"></span>Shine your eye</span>
+    <a href="https://github.com/aguluman/shine-your-eye">Source code</a>
+  </header>
+
+  <main>
+    <h1>Got a strange message about your bank account? Check it before you act.</h1>
+    <p class="lead">Paste the SMS, WhatsApp message or email. It is checked in this browser first. Nothing leaves your device unless you agree, and even then your numbers, codes and email addresses are removed.</p>
+
+    <form id="check-form" class="workbench">
+      <div class="pane">
+        <label for="message">Stays on your device</label>
+        <textarea id="message" rows="9" spellcheck="false" placeholder="Dear customer, your account has been restricted. Update your BVN at…"></textarea>
+      </div>
+      <div class="pane">
+        <span class="pane-label" id="preview-label">The most that could ever leave, and only with your OK</span>
+        <div id="preview" class="redacted empty" aria-labelledby="preview-label" aria-live="polite"></div>
+        <p id="removed" class="removed"></p>
+      </div>
+      <div class="actions">
+        <button id="check" type="submit">Check message</button>
+        <p id="status" class="status" role="status" hidden></p>
+      </div>
+    </form>
+
+    <section id="consent" class="consent" hidden aria-labelledby="consent-title">
+      <h2 id="consent-title">Get a second opinion from the cloud?</h2>
+      <p id="consent-note"></p>
+      <div id="consent-preview" class="redacted"></div>
+      <label class="always"><input id="always-send" type="checkbox"> Always send redacted copies</label>
+      <div class="choices">
+        <button id="send" type="button">Send redacted copy</button>
+        <button id="keep" type="button" class="quiet">Keep it on my device</button>
+      </div>
+    </section>
+
+    <section id="result" class="result" tabindex="-1" hidden aria-live="polite"></section>
+
+    <footer class="device">
+      <p id="device-note"></p>
+      <button id="download" type="button" class="quiet" hidden>Download Gemini Nano to this browser</button>
+      <p class="fineprint">Banks and the CBN never ask for your PIN, OTP or password. When in doubt, call the number printed on your card.</p>
+    </footer>
+  </main>
+</body>
+</html>
