@@ -63,7 +63,7 @@ The safety-critical code exists once, in `core/`, and is tested once.
 
 ## Run it
 
-Requirements: JDK 21, Gradle 9.9, Node 22, the Firebase CLI, and a Firebase project with AI Logic set up for the Gemini Developer API.
+Requirements: JDK 21, Gradle 9.9, Node 24, the Firebase CLI, and a Firebase project with AI Logic set up for the Gemini Developer API.
 
 ```
 make wrapper && make test
