@@ -1,8 +1,7 @@
 # Firebase setup
 
 This is the one-time console work the app needs. Everything here is public
-configuration except the reCAPTCHA **secret** key, which goes only into the
-Firebase console.
+configuration.
 
 Project: `shine-your-eye` (Spark / no-cost plan).
 
@@ -17,26 +16,27 @@ setup. For localhost, paste the public API key into `config.ts` temporarily.
 
 Firebase AI Logic refuses every request until the app is attested.
 
-Use **reCAPTCHA v3**. It is free and needs no billing account.
+Use **reCAPTCHA Enterprise** (Fraud Defense). This project uses an existing
+Enterprise key on the Spark plan; creating a new key may require enabling
+Cloud Billing.
 
-1. <https://www.google.com/recaptcha/admin/create>
+1. Google Cloud console, project `shine-your-eye` → **Security → reCAPTCHA**
+   → **Create key**
    - Label: `shine your eye`
-   - Type: **v3**
+   - Platform: **Website**
    - Domains: `localhost`, `shine-your-eye.web.app`,
      `shine-your-eye.firebaseapp.com`
 2. Copy the **site key** into `web/src/config.ts`:
 
    ```ts
-   export const appCheckMode: AppCheckMode = "v3";
    export const recaptchaSiteKey = "…";
    ```
 
-3. Firebase console → **Security → App Check → Apps → web app → reCAPTCHA v3**
-   and paste the **site key and secret key**. Save.
+3. Firebase console → **Security → App Check → Apps → web app →
+   reCAPTCHA Enterprise**, paste the same site key, and save.
 
-To use reCAPTCHA Enterprise (Fraud Defense) instead, enable Cloud Billing on
-the project, set `appCheckMode = "enterprise"`, and register the app with that
-provider in App Check.
+The site key is public by design. No secret key is used for this provider, so
+nothing sensitive belongs in the repository.
 
 ### Localhost
 

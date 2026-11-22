@@ -60,7 +60,7 @@ private; see [docs/evaluation.md](docs/evaluation.md) for the format.
 ## Firebase
 
 - **Firebase AI Logic hybrid inference.** `firebase-ai` with `firebase-ai-ondevice` on Android, and `firebase/ai` on the web. Structured output keeps both models on one schema.
-- **App Check.** Play Integrity in release builds and the debug provider in debug builds on Android. reCAPTCHA v3 on the web by default, with a debug token on localhost; set `appCheckMode = "enterprise"` if you would rather use reCAPTCHA Enterprise (Fraud Defense).
+- **App Check.** Play Integrity in release builds and the debug provider in debug builds on Android. reCAPTCHA Enterprise (Fraud Defense) on the web, with a debug token on localhost.
 - **Remote Config.** Holds the cloud model name and the official bank domain list, so both can change without an app release.
 - **Hosting.** Serves the web app.
 
@@ -100,7 +100,7 @@ make android-debug
 
 Copy the App Check debug token from Logcat into the Firebase console under App Check, Manage debug tokens.
 
-**Web.** Fill in `web/src/config.ts` with your Firebase config, choose the App Check provider (`"v3"` needs no billing account; `"enterprise"` does), and paste its site key. Register the web app in Firebase under App Check with the **same** provider, or every AI request is refused. Then run:
+**Web.** Fill in `web/src/config.ts` with your Firebase config and your reCAPTCHA Enterprise site key. Register the web app in Firebase under App Check with reCAPTCHA Enterprise too, or every AI request is refused. Then run:
 
 ```
 make web-dev

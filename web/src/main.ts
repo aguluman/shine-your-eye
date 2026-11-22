@@ -1,19 +1,9 @@
 import { initializeApp } from "firebase/app";
-import {
-  initializeAppCheck,
-  ReCaptchaEnterpriseProvider,
-  ReCaptchaV3Provider,
-} from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 import { fetchAndActivate, getRemoteConfig, getValue } from "firebase/remote-config";
 import { findingFor, firstStepFor, inspect, stepAfterDevice, type Finding, type Inspection } from "shineye-core";
 import { deviceAvailability, downloadDeviceModel, Models, type Answer } from "./ai";
-import {
-  appCheckMode,
-  defaultCloudModel,
-  firebaseConfig,
-  recaptchaSiteKey,
-  type FirebaseOptions,
-} from "./config";
+import { defaultCloudModel, firebaseConfig, recaptchaSiteKey, type FirebaseOptions } from "./config";
 
 type Step = "ASK_ON_DEVICE" | "ASK_CLOUD" | "OFFER_CLOUD" | "SETTLE";
 type Consent = "ALWAYS" | "ASK" | "NEVER";
@@ -66,10 +56,7 @@ async function resolveConfig(): Promise<FirebaseOptions> {
 const boot = (async () => {
   const app = initializeApp(await resolveConfig());
   initializeAppCheck(app, {
-    provider:
-      appCheckMode === "enterprise"
-        ? new ReCaptchaEnterpriseProvider(recaptchaSiteKey)
-        : new ReCaptchaV3Provider(recaptchaSiteKey),
+    provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
     isTokenAutoRefreshEnabled: true,
   });
   const remote = getRemoteConfig(app);

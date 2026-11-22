@@ -24,18 +24,9 @@ export const firebaseConfig: FirebaseOptions = {
   appId: "1:474113410192:web:85e6d964de769da79f4415",
 };
 
-// App Check provider for the web app.
-//
-// "v3"         reCAPTCHA v3
-// "enterprise" reCAPTCHA Enterprise / Fraud Defense
-//
-// Register the web app in Firebase under App Check with the same provider,
-// then paste the site key here. The secret key goes only into the Firebase
-// console, never into this file.
-export type AppCheckMode = "v3" | "enterprise";
-
-export const appCheckMode: AppCheckMode = "enterprise";
-
+// reCAPTCHA Enterprise (Fraud Defense) site key. Register the web app in
+// Firebase App Check with the same provider. No secret key is used for this
+// provider, and the site key is public by design.
 export const recaptchaSiteKey = "6LdTkysuAAAAAJz2I496L_E9NGvclrrSSMFEDQay";
 
 export const defaultCloudModel = "gemini-3.5-flash-lite";

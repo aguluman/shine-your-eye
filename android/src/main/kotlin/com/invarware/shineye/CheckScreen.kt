@@ -68,7 +68,7 @@ fun CheckScreen(app: ShineEyeApp, shared: String?) {
         show(checker, app.check(checker, text))
     }
 
-    LaunchedEffect(shared) { if (!shared.isNullOrBlank()) check() }
+    LaunchedEffect(shared) { if (!shared.isNullOrBlank()) { text = shared; check() } }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
