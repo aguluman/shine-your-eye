@@ -51,6 +51,16 @@ Not guaranteed: personal names stay in the text. Digits written as letters ("zer
 - **Remote Config.** Holds the cloud model name and the official bank domain list, so both can change without an app release.
 - **Hosting.** Serves the web app.
 
+## Screenshots
+
+| Redaction preview | On-device verdict |
+|---|---|
+| ![Personal details replaced with tags before anything could leave](docs/screenshots/01-redaction.png) | ![Checked by Gemini Nano in the browser](docs/screenshots/02-on-device.png) |
+
+| Rules catch a clear scam | Same check with the network off |
+|---|---|
+| ![A scam caught without running a model](docs/screenshots/03-rules.png) | ![On-device verdict while offline](docs/screenshots/04-offline.png) |
+
 ## Layout
 
 ```
