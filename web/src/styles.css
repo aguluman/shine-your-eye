@@ -1,6 +1,9 @@
+/* The consent card uses display: grid, which otherwise overrides the
+   browser's [hidden] rule. */
+[hidden] { display: none !important; }
+
 :root {
-  color-scheme: light;
-  --paper: #eef3f1;
+  color-scheme: light;  --paper: #eef3f1;
   --card: #ffffff;
   --ink: #102a24;
   --muted: #4b5f59;
