@@ -26,7 +26,7 @@ SHINE_EVAL_CORPUS=$HOME/private/scam-corpus.tsv \
   ./gradlew :core:jvmTest --tests '*EvaluationTest*' --info
 ```
 
-The report prints:
+Illustrative output, not real results:
 
 ```
 rules-only corpus report

@@ -34,9 +34,9 @@ Raw text is accepted only by the on-device model. The cloud model accepts only `
 
 Hybrid inference is the product, not a fallback. On the web, `getGenerativeModel` is called with `mode: InferenceMode.ONLY_ON_DEVICE` and `onDeviceParams`, which uses Gemini Nano in Chrome. On Android, a `GenerativeModel` is created with `OnDeviceConfig(mode = InferenceMode.ONLY_ON_DEVICE)` from `firebase-ai-ondevice`. `ONLY_ON_DEVICE` throws instead of silently falling back to the cloud.
 
-A second model runs with `PREFER_IN_CLOUD`. The cloud model is `gemini-3.5-flash-lite`, chosen for fast structured classification; the name lives in Remote Config. App Check is enforced with Fraud Defense (reCAPTCHA Enterprise) on the web and Play Integrity on Android, with debug tokens for local testing. Remote Config also holds the official bank-domain allowlist. Hosting serves the web client. No message is stored, and there is no authentication or database.
+A second model runs with `PREFER_IN_CLOUD`. The cloud model is `gemini-3.5-flash-lite`, chosen for fast structured classification; the name lives in Remote Config. App Check is enforced with Fraud Defense (reCAPTCHA Enterprise) on the web and Play Integrity on Android, with debug tokens for local testing. Remote Config also holds the official bank-domain allowlist. Hosting serves the web client. The app stores no messages and has no authentication or database. Cloud requests contain only redacted text; Firebase AI Logic monitoring may retain request metadata.
 
-This is a new project, created entirely during the submission period. No pre-existing project code was incorporated. It was built with AI coding assistants as pair programmers, under the entrant's direction and review. All third-party libraries are open source. Real bank names appear only as factual entries in the official-domain allowlist; the demo uses fictional bank names and domains.
+This is a new project, created entirely during the submission period. No pre-existing project code was incorporated. It was built with AI coding assistants as pair programmers, under the entrant's direction and review. The project code is Apache 2.0; third-party SDKs are used under their own licences. Real bank names appear only as factual entries in the official-domain allowlist; the demo uses fictional bank names and domains.
 
 ## Challenges we ran into
 
@@ -51,10 +51,10 @@ A smaller but real bug: the consent card used `display: grid`, which overrode th
 ## Accomplishments that we're proud of
 
 - 32 tests pass on both the JVM and Node (64 executions), including exhaustive routing and a check that no model can talk a scam down.
-- A million generated messages produced no surviving phone number, account number, BVN, card number, email address, or run of four or more digits outside naira amounts.
+- Property tests over 20,000 random messages per run in CI produced no surviving phone number, account number, BVN, card number, email address, or run of four or more digits outside naira amounts.
 - The same privacy boundary works in Kotlin and in TypeScript.
 - The app is useful with no model at all: the rules catch the common scams instantly.
-- The on-device path was demonstrated on real hardware, and it still works with the network switched off.
+- The on-device path was demonstrated on desktop Chrome on a real machine, and it still works with the network switched off.
 
 ## What we learned
 
