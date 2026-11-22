@@ -115,3 +115,67 @@ Show the URL and the repository once, then stop.
 - Close notifications and other windows.
 - 1080p or higher, English audio. If you narrate off-camera, keep the cursor
   moving only when it points at something.
+
+## Recording kit
+
+### Already recorded: the web segment
+
+`~/Videos/shine-web-demo-captioned.mp4` — 56 seconds, 1280×720, English
+captions burned in. It shows:
+
+1. the redaction preview with tags,
+2. an on-device verdict ("Checked by Gemini Nano in this browser"),
+3. a scam caught by rules with no AI,
+4. the same on-device check with the network off.
+
+The uncaptioned source is `~/Videos/shine-web-demo.mp4`; captions are in
+`~/Videos/shine-web-demo.srt`.
+
+### Android segment (record on the phone)
+
+Connect the Pixel with USB debugging, then start the screen recorder **before**
+sharing a message into the app:
+
+```sh
+adb shell screenrecord --size 720x1600 --bit-rate 6000000 --time-limit 45 \
+  /sdcard/shine-android.mp4
+```
+
+While it records:
+
+1. Share this message into Shine your eye:
+   `Dear customer, your account has been restricted. Verify your BVN at https://mybank-verify.xyz/verify?ref=8821`
+2. Let the rules verdict appear.
+3. Show the consent card with the redacted copy.
+4. Tap **Send redacted copy** and let the cloud verdict and trail appear.
+
+Stop with Ctrl-C, then pull the clip:
+
+```sh
+adb pull /sdcard/shine-android.mp4 ~/Videos/shine-android.mp4
+```
+
+### Assemble and upload
+
+Normalise the phone clip onto the same 1280×720 canvas:
+
+```sh
+ffmpeg -y -i ~/Videos/shine-android.mp4 \
+  -vf "scale=-2:720,fps=30,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x0e1916" \
+  -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p \
+  ~/Videos/shine-android-720.mp4
+
+printf "file '%s'\n" \
+  "$HOME/Videos/shine-web-demo-captioned.mp4" \
+  "$HOME/Videos/shine-android-720.mp4" > ~/Videos/concat.txt
+
+ffmpeg -y -f concat -safe 0 -i ~/Videos/concat.txt -c copy \
+  ~/Videos/shine-demo.mp4
+```
+
+That lands at about 1:40, leaving room to open with the problem and close with the
+README guarantees. Add narration if you want; the captions already satisfy the
+English requirement.
+
+Upload to YouTube as **public** or **unlisted, no password**, and paste the URL
+into the Devpost form.
