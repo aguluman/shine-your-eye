@@ -119,7 +119,7 @@ the point.*
 *Deliberate. Slow on "only". Land hard on "I say yes". It is the moral centre of
 the product.*
 
-### 1:20 – 1:29 · The verdict in full
+### 1:20 – 1:26 · The verdict in full
 
 > The cloud adds its reasons. The rules still set the floor.
 >
@@ -129,7 +129,7 @@ the product.*
 
 *Firm, unhurried. "Still" gets a small push.*
 
-### 1:29 – 1:34 · Close
+### 1:26 – 1:31 · Close
 
 > The raw message never left the phone.
 >
@@ -140,7 +140,7 @@ the product.*
 *Back to the intimate voice from the opening. "Never" is quiet, not shouted. The
 last sentence is advice to one person.*
 
-### 1:34 – 1:38 · End card
+### 1:31 – 1:34 · End card
 
 > shine-your-eye dot web dot app.
 
