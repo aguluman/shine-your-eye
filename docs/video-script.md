@@ -54,7 +54,7 @@ On the Pixel, share this SMS into Shine your eye:
 
 ```
 Dear customer, your account has been restricted. Update your BVN at
-https://gtbank-secure.xyz/verify?ref=8821
+https://mybank-verify.xyz/verify?ref=8821
 ```
 
 Show:
