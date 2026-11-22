@@ -23,6 +23,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.invarware.shineye.core.Analysis
 import com.invarware.shineye.core.CloudConsent
+import com.invarware.shineye.core.Raw
 import kotlinx.coroutines.launch
 
 private sealed interface Screen {
@@ -67,15 +70,18 @@ fun CheckScreen(app: ShineEyeApp, shared: String?) {
 
     LaunchedEffect(shared) { if (!shared.isNullOrBlank()) check() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .safeDrawingPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeDrawingPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
         Text("Shine your eye", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Text(
             "Paste a message about your bank account. It is checked on your phone first.",
@@ -88,6 +94,7 @@ fun CheckScreen(app: ShineEyeApp, shared: String?) {
             minLines = 5,
             label = { Text("Message") },
         )
+        if (text.isNotBlank()) RedactionPreview(text)
         Button(onClick = { check() }, enabled = text.isNotBlank() && screen != Screen.Working) {
             Text("Check message")
         }
@@ -115,6 +122,34 @@ fun CheckScreen(app: ShineEyeApp, shared: String?) {
                 },
             )
             is Screen.Result -> ResultCard(current.done)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RedactionPreview(text: String) {
+    val redacted = remember(text) { Analysis.of(Raw(text)).redacted }
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                "The most that could leave, and only with your OK",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(redacted.text, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodyMedium)
+            val gone = redacted.describe()
+            Text(
+                if (gone.isEmpty()) "Nothing personal found to remove." else "Removed: ${gone.joinToString(", ")}",
+                style = MaterialTheme.typography.bodySmall,
+            )
         }
     }
 }
