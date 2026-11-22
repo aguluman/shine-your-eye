@@ -274,6 +274,22 @@ downloadButton.addEventListener("click", async () => {
   }
 });
 
+const examples: Record<string, string> = {
+  scam: "Your account will be blocked. Send your OTP to 08031234567 now.",
+  legit: "Hello, this is a notice from your bank about a recent transaction. Please review the details in the app.",
+  pidgin: "Abeg wetin dey happen? My account show alert but balance no change. Call 08031234567.",
+};
+
+for (const button of document.querySelectorAll<HTMLButtonElement>("[data-example]")) {
+  button.addEventListener("click", () => {
+    const text = examples[button.dataset.example ?? ""];
+    if (!text) return;
+    message.value = text;
+    updatePreview();
+    void check();
+  });
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   check().catch(() => {

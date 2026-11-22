@@ -154,6 +154,20 @@ textarea { resize: vertical; }
 
 .removed, .status, .fineprint { margin: 0; color: var(--muted); font-size: 0.95rem; }
 
+.examples { margin-top: 1.6rem; }
+.examples h2 { margin: 0; font-size: 1.05rem; }
+.example-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.7rem; }
+.example {
+  min-height: 2.6rem;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+.example:hover { border-color: var(--ink); }
+.examples .fineprint { margin: 0.6rem 0 0; }
+
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
 
 button {

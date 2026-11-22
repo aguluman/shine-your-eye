@@ -107,7 +107,10 @@ internal fun signalsIn(message: Raw, words: Words, official: OfficialDomains): S
     val hosts = hostsIn(message.text)
     val foreign = hosts.filterNot(official::owns)
     val runs = digitRuns(message.text)
-    return buildSet {
+
+    // Strong, self-contained signals. These establish that the message is about
+    // money even when it never says "bank".
+    val base = buildSet {
         if (asked.hasAny(secrets) && asked.hasAny(shareVerbs)) add(Signal.ASKS_FOR_SECRET)
         if (foreign.any(::usesBrand)) add(Signal.IMPERSONATES_BANK)
         if (words.hasAny(threats) && words.hasAny(threatened)) add(Signal.ACCOUNT_THREAT)
@@ -115,12 +118,37 @@ internal fun signalsIn(message: Raw, words: Words, official: OfficialDomains): S
         if (words.hasAny(refunds)) add(Signal.REFUND_REQUEST)
         if (words.hasAny(prizes)) add(Signal.PRIZE_OR_GRANT)
         if (words.hasAny(fees) && words.hasAny(payVerbs)) add(Signal.FEE_REQUEST)
-        if (foreign.any { it in shorteners }) add(Signal.SHORTENED_LINK)
-        if (foreign.any { it !in shorteners && !usesBrand(it) }) add(Signal.UNOFFICIAL_LINK)
-        if (words.hasAny(urgency)) add(Signal.URGENCY)
-        if (words.hasAny(contactVerbs) && runs.any { isPhone(it.digits) }) add(Signal.CALL_THIS_NUMBER)
+    }
+
+    // A link, a phone number or urgency only matters if this is a bank message,
+    // or if another scam signal already put it in that context. Without this,
+    // an ordinary ride-hailing promo with a WhatsApp number and a link is
+    // reported as a warning, which makes the app look unreliable.
+    val financial = base.isNotEmpty() || bankContext(words, hosts, official)
+
+    return buildSet {
+        addAll(base)
+        if (financial) {
+            if (foreign.any { it in shorteners }) add(Signal.SHORTENED_LINK)
+            if (foreign.any { it !in shorteners && !usesBrand(it) }) add(Signal.UNOFFICIAL_LINK)
+            if (words.hasAny(urgency)) add(Signal.URGENCY)
+            if (words.hasAny(contactVerbs) && runs.any { isPhone(it.digits) }) add(Signal.CALL_THIS_NUMBER)
+        }
     }
 }
+
+private val bankWords = setOf(
+    "bank", "banks", "banking", "account", "accounts", "card", "atm", "bvn", "nin",
+    "transfer", "transaction", "transactions", "balance", "debit", "credit", "alert",
+    "statement", "loan", "loans", "deposit", "withdraw", "withdrawal", "wallet", "ussd",
+    "otp", "pin", "naira", "ngn", "beneficiary", "kyc", "payment", "pay", "paid",
+    "sort code", "bank app", "mobile banking", "internet banking",
+)
+
+private fun bankContext(words: Words, hosts: List<String>, official: OfficialDomains): Boolean =
+    words.hasAny(bankWords) ||
+        hosts.any(::usesBrand) ||
+        hosts.any(official::owns)
 
 internal fun usesBrand(host: String): Boolean {
     val labels = host.split('.', '-').filter { it.isNotEmpty() }

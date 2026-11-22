@@ -83,3 +83,39 @@ class SignalsTest {
         }
     }
 }
+
+class FalsePositiveTest {
+
+    private fun signals(text: String) = Analysis.of(Raw(text)).signals
+
+    @Test
+    fun anOrdinaryRidePromoIsNotAWarning() {
+        val text = """
+            Happy Independence Day, Nigeria!
+            Heading out today? Let Linc Ride get you there.
+            Book on WhatsApp: Send RIDE to 07051797935 or tap
+            https://www.tmii.io/iRHanN
+            Wherever today takes you, ride with Linc.
+        """.trimIndent()
+        val found = signals(text)
+        assertFalse(Signal.UNOFFICIAL_LINK in found)
+        assertFalse(Signal.CALL_THIS_NUMBER in found)
+        assertEquals(Risk.LOW, floorOf(found))
+    }
+
+    @Test
+    fun aBankMessageWithAPhoneAndLinkIsStillFlagged() {
+        val found = signals("Dear customer, your account will be restricted. Call 08031234567 or visit https://mybank-verify.xyz/notice")
+        assertTrue(Signal.ACCOUNT_THREAT in found)
+        assertTrue(Signal.UNOFFICIAL_LINK in found)
+        assertTrue(Signal.CALL_THIS_NUMBER in found)
+        assertEquals(Risk.ELEVATED, floorOf(found))
+    }
+
+    @Test
+    fun aParcelPhishingMessageStillReachesTheModel() {
+        val found = signals("Your parcel is waiting. Visit parcel-ng.xyz/track")
+        assertFalse(Signal.UNOFFICIAL_LINK in found)
+        assertEquals(Risk.LOW, floorOf(found))
+    }
+}
