@@ -44,6 +44,19 @@ flowchart TD
 
 Not guaranteed: personal names stay in the text. Digits written as letters ("zero eight zero…") and non-Latin lookalike domains are not caught yet. The rules are tuned for English and Nigerian Pidgin.
 
+## Measuring the rules
+
+The rules run before any model, so they can be measured on their own. Point the
+JVM test at a private TSV corpus:
+
+```sh
+SHINE_EVAL_CORPUS=$HOME/private/scam-corpus.tsv \
+  ./gradlew :core:jvmTest --tests '*EvaluationTest*' --info
+```
+
+It prints caught/missed/false-alarm counts and precision/recall. The corpus stays
+private; see [docs/evaluation.md](docs/evaluation.md) for the format.
+
 ## Firebase
 
 - **Firebase AI Logic hybrid inference.** `firebase-ai` with `firebase-ai-ondevice` on Android, and `firebase/ai` on the web. Structured output keeps both models on one schema.
